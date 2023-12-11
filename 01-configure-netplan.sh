@@ -8,7 +8,7 @@ fi
 
 # Install netplan if not already installed
 apt update
-apt install -y netplan.io
+apt install -y netplan.io systemd
 
 # Disable the existing networking stack
 systemctl stop networking
@@ -28,7 +28,10 @@ network:
       dhcp4: true
 EOL
 
+# Set restrictive permissions on the Netplan configuration file
+chmod 0644 /etc/netplan/01-netcfg.yaml
+
 # Apply the Netplan configuration
-# netplan apply
+netplan apply
 
 echo "Netplan configuration applied successfully for interface: $eth_interface."
