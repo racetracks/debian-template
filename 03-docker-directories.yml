@@ -1,6 +1,6 @@
 ---
 - name: Create directories and subdirectories
-  hosts: your_target_host
+  hosts: localhost
   become: yes
 
   vars:
@@ -25,12 +25,10 @@
 
     - name: Create subdirectories in base directories
       file:
-        path: "/opt/docker/{{ item.0 }}/{{ sub_dir }}"
+        path: "/opt/docker/{{ item }}/subdirectory/{{ sub_dir }}"
         state: directory
         mode: '0755'
-      loop: "{{ subdirectories }}"
+      loop: "{{ base_directories }}"
       loop_control:
-        loop_var: sub_dir
-      with_nested:
-        - "{{ base_directories }}"
-        - "{{ subdirectories }}"
+        loop_var: item
+      with_items: "{{ subdirectories }}"
