@@ -8,7 +8,11 @@ fi
 
 # Install netplan if not already installed
 apt update
-apt install -y netplan.io systemd
+apt install -y netplan.io systemd openvswitch-switch
+
+
+
+
 
 # Disable the existing networking stack
 systemctl stop networking
@@ -16,7 +20,7 @@ systemctl disable networking
 systemctl mask networking
 
 # Detect the primary Ethernet interface dynamically
-eth_interface=$(ip -o -4 route show to default | awk '{print $5}')
+
 
 # Create a Netplan YAML configuration file
 cat <<EOL > /etc/netplan/01-netcfg.yaml
@@ -24,12 +28,16 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    $eth_interface:
+    ens18:
       dhcp4: true
 EOL
 
 # Set restrictive permissions on the Netplan configuration file
 chmod 0644 /etc/netplan/01-netcfg.yaml
+
+sudo systemctl enable openvswitch-switch
+sudo systemctl start openvswitch-switch
+
 
 # Apply the Netplan configuration
 netplan apply
