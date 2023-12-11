@@ -1,1 +1,31 @@
+---
+- name: Create Docker directories
+  hosts: localhost
+  become: yes
 
+  tasks:
+    - name: Create parent directories
+      file:
+        path: "/opt/docker/{{ item }}"
+        state: directory
+        mode: 0755
+      with_items:
+        - watchtower
+        - portainer_agent
+
+    - name: Create child directories
+      file:
+        path: "/opt/docker/{{ parent }}/watchtower/{{ item }}"
+        state: directory
+        mode: 0755
+      with_items:
+        - run
+        - build
+        - temp
+      loop_control:
+        loop_var: child
+        extended: true
+      with_items:
+        - watchtower
+        - portainer_agent
+      loop_var: parent
