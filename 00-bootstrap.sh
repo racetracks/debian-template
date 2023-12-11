@@ -27,3 +27,7 @@ service ssh restart
 echo "dc ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
 echo "Setup complete. Make sure to test the SSH login with the user account before logging out as root."
+
+
+# screen
+apt install screen -y
