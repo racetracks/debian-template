@@ -33,7 +33,7 @@ network:
 EOL
 
 # Set restrictive permissions on the Netplan configuration file
-chmod 0644 /etc/netplan/01-netcfg.yaml
+chmod 0600 /etc/netplan/01-netcfg.yaml
 
 sudo systemctl enable openvswitch-switch
 sudo systemctl start openvswitch-switch
