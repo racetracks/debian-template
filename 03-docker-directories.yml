@@ -25,10 +25,10 @@
 
     - name: Create subdirectories in base directories
       file:
-        path: "/opt/docker/{{ item }}/subdirectory/{{ sub_dir }}"
+        path: "/opt/docker/{{ item }}/subdirectory/{{ subdir }}"
         state: directory
         mode: '0755'
       loop: "{{ base_directories }}"
       loop_control:
         loop_var: item
-      with_items: "{{ subdirectories }}"
+      loop_var: subdir
