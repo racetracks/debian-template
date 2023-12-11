@@ -30,7 +30,7 @@ EOL
 cd /opt/docker/watchtower/build/
 
 # Run docker-compose up -d for Watchtower
-docker-compose up -d
+docker compose up -d
 
 # Create the Docker Compose file for Portainer Agent
 cat > /opt/docker/portainer_agent/build/docker-compose.yml <<EOL
@@ -57,4 +57,4 @@ EOL
 cd /opt/docker/portainer_agent/build/
 
 # Run docker-compose up -d for Portainer Agent
-docker-compose up -d
+docker compose up -d
