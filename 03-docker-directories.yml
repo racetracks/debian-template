@@ -51,10 +51,6 @@
       become: yes
 
     - name: Write docker-compose.yml
-      ansible.builtin.file:
-        path: "/opt/docker/watchtower/build/docker-compose.yml"
-        state: touch
-        mode: '0644'
       ansible.builtin.blockinfile:
         path: "/opt/docker/watchtower/build/docker-compose.yml"
-        content: "{{ docker_compose_content }}"
+        block: "{{ docker_compose_content }}"
