@@ -21,6 +21,4 @@
         path: "/opt/docker/{{ item.0 }}/{{ item.1 }}"
         state: directory
         mode: '0755'
-      with_cartesian:
-        - "{{ base_directories }}"
-        - "{{ subdirectories }}"
+      loop: "{{ base_directories | product(subdirectories) | list }}"
