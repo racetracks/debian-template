@@ -1,0 +1,18 @@
+---
+- name: Install network tools on Debian
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install net-tools, iptraf-ng, and nmap
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - net-tools
+        - iptraf-ng
+        - nmap
