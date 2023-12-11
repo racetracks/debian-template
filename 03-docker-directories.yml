@@ -16,19 +16,11 @@
       # Add any additional subdirectories here
 
   tasks:
-    - name: Create directories
-      file:
-        path: "/opt/docker/{{ item.0 }}"
-        state: directory
-        mode: '0755'
-      with_items: "{{ base_directories | product(['']) | list }}"
-
-    - name: Create subdirectories in base directories
+    - name: Create directories and subdirectories
       file:
         path: "/opt/docker/{{ item.0 }}/{{ item.1 }}"
         state: directory
         mode: '0755'
-      with_items:
+      with_nested:
         - "{{ base_directories }}"
         - "{{ subdirectories }}"
-      when: item.1 != ''
