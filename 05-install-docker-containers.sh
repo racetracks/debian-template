@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the timezone
-timezone="America/New_York"  # Replace with your desired timezone
+timezone="Australia/Adelaide"  # Replace with your desired timezone
 
 # Create the Docker Compose file for Watchtower
 cat > /opt/docker/watchtower/build/docker-compose.yml <<EOL
