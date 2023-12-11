@@ -1,5 +1,5 @@
 ---
-- name: Create directories, set timezone, and write docker-compose.yml
+- name: Create directories and subdirectories
   hosts: localhost
   become: yes
 
@@ -15,29 +15,6 @@
       - temp
       # Add any additional subdirectories here
 
-    timezone: Australia/Adelaide  # Set your desired timezone here
-
-    docker_compose_content: |
-      version: "3"
-      services:
-        watchtower:
-          image: containrrr/watchtower
-          restart: always
-          volumes:
-            - /etc/localtime:/etc/localtime:ro
-            - /var/run/docker.sock:/var/run/docker.sock:ro
-            - /etc/timezone:/etc/timezone:ro
-          environment:
-            - PUID=1000
-            - PGID=1000
-            - TZ={{ timezone }}
-            - UMASK_SET=022 #optional
-            - WATCHTOWER_CLEANUP=true
-            - WATCHTOWER_LABEL_ENABLE=true
-            - WATCHTOWER_INCLUDE_RESTARTING=true
-          labels:
-            - "com.centurylinklabs.watchtower.enable=true"
-
   tasks:
     - name: Create directories and subdirectories
       file:
@@ -45,28 +22,3 @@
         state: directory
         mode: '0755'
       loop: "{{ base_directories | product(subdirectories) | list }}"
-
-    - name: Set timezone
-      command: "timedatectl set-timezone {{ timezone }}"
-      become: yes
-
-    - name: Write docker-compose.yml
-      block:
-        - name: Check if file exists
-          stat:
-            path: "/opt/docker/watchtower/build/docker-compose.yml"
-          register: file_stat
-
-        - name: Touch file if it doesn't exist
-          ansible.builtin.file:
-            path: "/opt/docker/watchtower/build/docker-compose.yml"
-            state: touch
-          when: not file_stat.stat.exists
-
-        - name: Clear and write contents
-          ansible.builtin.blockinfile:
-            path: "/opt/docker/watchtower/build/docker-compose.yml"
-            block: "{{ docker_compose_content }}"
-            marker: ""
-          when: file_stat.stat.exists
-      become: yes
