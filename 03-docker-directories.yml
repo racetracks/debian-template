@@ -1,5 +1,5 @@
 ---
-- name: Create directories and subdirectories
+- name: Create directories, set timezone, and write docker-compose.yml
   hosts: localhost
   become: yes
 
@@ -15,6 +15,8 @@
       - temp
       # Add any additional subdirectories here
 
+    timezone: Australia/Adelaide  # Set your desired timezone here
+
   tasks:
     - name: Create directories and subdirectories
       file:
@@ -22,3 +24,14 @@
         state: directory
         mode: '0755'
       loop: "{{ base_directories | product(subdirectories) | list }}"
+
+    - name: Set timezone
+      command: "timedatectl set-timezone {{ timezone }}"
+      become: yes
+
+    - name: Write docker-compose.yml
+      template:
+        src: docker-compose.yml.j2
+        dest: "/opt/docker/watchtower/build/docker-compose.yml"
+      vars:
+        timezone: "{{ timezone }}"
