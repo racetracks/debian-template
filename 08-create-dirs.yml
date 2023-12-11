@@ -1,1 +1,25 @@
+---
+- name: Create Directories and Set Permissions
+  hosts: localhost
+  become: yes  # Run tasks with sudo
 
+  tasks:
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /opt/core/cron
+        - /opt/core/cron/ansible
+        - /opt/core/cron/sh
+        - /opt/core/deploy
+
+    - name: Set permissions to 755
+      file:
+        path: "{{ item }}"
+        mode: '0755'
+      loop:
+        - /opt/core/cron
+        - /opt/core/cron/ansible
+        - /opt/core/cron/sh
+        - /opt/core/deploy
