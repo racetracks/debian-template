@@ -1,31 +1,36 @@
 ---
-- name: Create Docker directories
+- name: Create directories and subdirectories
   hosts: localhost
   become: yes
 
-  tasks:
-    - name: Create parent directories
-      file:
-        path: "/opt/docker/{{ item }}"
-        state: directory
-        mode: 0755
-      with_items:
-        - watchtower
-        - portainer_agent
+  vars:
+    base_directories:
+      - /opt/docker/watchtower
+      - /opt/docker/portainer_agent
+      # Add any additional directories here
 
-    - name: Create child directories
+    subdirectories:
+      - build
+      - run
+      - temp
+      # Add any additional subdirectories here
+
+  tasks:
+    - name: Create base directories
       file:
-        path: "/opt/docker/{{ parent }}/watchtower/{{ item }}"
+        path: "{{ item }}"
         state: directory
-        mode: 0755
-      with_items:
-        - run
-        - build
-        - temp
+        mode: '0755'
+      with_items: "{{ base_directories }}"
+
+    - name: Create subdirectories in base directories
+      file:
+        path: "{{ base_dir }}/{{ sub_dir }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ subdirectories }}"
       loop_control:
-        loop_var: child
-        extended: true
-      with_items:
-        - watchtower
-        - portainer_agent
-      loop_var: parent
+        loop_var: sub_dir
+      with_items: "{{ base_directories }}"
+      vars:
+        base_dir: "{{ item }}"
