@@ -5,8 +5,8 @@
 
   vars:
     base_directories:
-      - /opt/docker/watchtower
-      - /opt/docker/portainer_agent
+      - watchtower
+      - portainer_agent
       # Add any additional directories here
 
     subdirectories:
@@ -18,19 +18,21 @@
   tasks:
     - name: Create base directories
       file:
-        path: "{{ item }}"
+        path: "/opt/docker/{{ item }}"
         state: directory
         mode: '0755'
       with_items: "{{ base_directories }}"
 
     - name: Create subdirectories in base directories
       file:
-        path: "{{ base_dir }}/{{ sub_dir }}"
+        path: "/opt/docker/{{ base_dir }}/{{ sub_dir }}"
         state: directory
         mode: '0755'
       loop: "{{ subdirectories }}"
       loop_control:
         loop_var: sub_dir
-      with_items: "{{ base_directories }}"
+      with_nested:
+        - "{{ base_directories }}"
+        - "{{ subdirectories }}"
       vars:
-        base_dir: "{{ item }}"
+        base_dir: "{{ item.0 }}"
