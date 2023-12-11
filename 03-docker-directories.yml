@@ -51,6 +51,22 @@
       become: yes
 
     - name: Write docker-compose.yml
-      ansible.builtin.blockinfile:
-        path: "/opt/docker/watchtower/build/docker-compose.yml"
-        block: "{{ docker_compose_content }}"
+      block:
+        - name: Check if file exists
+          stat:
+            path: "/opt/docker/watchtower/build/docker-compose.yml"
+          register: file_stat
+
+        - name: Touch file if it doesn't exist
+          ansible.builtin.file:
+            path: "/opt/docker/watchtower/build/docker-compose.yml"
+            state: touch
+          when: not file_stat.stat.exists
+
+        - name: Clear and write contents
+          ansible.builtin.blockinfile:
+            path: "/opt/docker/watchtower/build/docker-compose.yml"
+            block: "{{ docker_compose_content }}"
+            marker: ""
+          when: file_stat.stat.exists
+      become: yes
