@@ -29,6 +29,6 @@ network:
 EOL
 
 # Apply the Netplan configuration
-netplan apply
+# netplan apply
 
 echo "Netplan configuration applied successfully for interface: $eth_interface."
