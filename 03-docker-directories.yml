@@ -17,6 +17,27 @@
 
     timezone: Australia/Adelaide  # Set your desired timezone here
 
+    docker_compose_content: |
+      version: "3"
+      services:
+        watchtower:
+          image: containrrr/watchtower
+          restart: always
+          volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - /etc/timezone:/etc/timezone:ro
+          environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ={{ timezone }}
+            - UMASK_SET=022 #optional
+            - WATCHTOWER_CLEANUP=true
+            - WATCHTOWER_LABEL_ENABLE=true
+            - WATCHTOWER_INCLUDE_RESTARTING=true
+          labels:
+            - "com.centurylinklabs.watchtower.enable=true"
+
   tasks:
     - name: Create directories and subdirectories
       file:
@@ -30,8 +51,10 @@
       become: yes
 
     - name: Write docker-compose.yml
-      template:
-        src: docker-compose.yml.j2
-        dest: "/opt/docker/watchtower/build/docker-compose.yml"
-      vars:
-        timezone: "{{ timezone }}"
+      ansible.builtin.file:
+        path: "/opt/docker/watchtower/build/docker-compose.yml"
+        state: touch
+        mode: '0644'
+      ansible.builtin.blockinfile:
+        path: "/opt/docker/watchtower/build/docker-compose.yml"
+        content: "{{ docker_compose_content }}"
