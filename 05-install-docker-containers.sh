@@ -73,7 +73,7 @@ services:
 EOL
 
 
-cd /opt/node_exporter/portainer_agent/build/
+cd /opt/docker/node_exporter/build/
 
 # Run docker-compose up -d for Portainer Agent
 docker compose up -d
