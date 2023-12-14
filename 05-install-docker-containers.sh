@@ -58,3 +58,22 @@ cd /opt/docker/portainer_agent/build/
 
 # Run docker-compose up -d for Portainer Agent
 docker compose up -d
+
+
+# Create the Docker Compose file for Watchtower
+cat > /opt/docker/node_exporter/build/docker-compose.yml <<EOL
+version: '3'
+services:
+  node-exporter:
+    image: prom/node-exporter
+    ports:
+      - 9100:9100
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+EOL
+
+
+cd /opt/node_exporter/portainer_agent/build/
+
+# Run docker-compose up -d for Portainer Agent
+docker compose up -d
