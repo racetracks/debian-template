@@ -68,6 +68,7 @@ services:
     image: prom/node-exporter
     ports:
       - 9100:9100
+    restart: always
     labels:
       - com.centurylinklabs.watchtower.enable=true
 EOL
