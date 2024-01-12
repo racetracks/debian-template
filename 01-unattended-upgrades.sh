@@ -10,8 +10,8 @@ sudo apt install unattended-upgrades -y
 sudo dpkg-reconfigure -plow unattended-upgrades
 
 # Install KernelCare
-sudo wget -qq http://repo.kernelcare.com/3.10.0/3.10.0-862.14.4.el7/kernelcare-latest-$(uname -m).deb -O /tmp/kernelcare-latest.deb
-sudo dpkg -i /tmp/kernelcare-latest.deb
+#sudo wget -qq http://repo.kernelcare.com/3.10.0/3.10.0-862.14.4.el7/kernelcare-latest-$(uname -m).deb -O /tmp/kernelcare-latest.deb
+#sudo dpkg -i /tmp/kernelcare-latest.deb
 
 # Configure unattended-upgrades to install patches for all packages
 sudo tee /etc/apt/apt.conf.d/20auto-upgrades <<EOF
