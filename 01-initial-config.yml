@@ -54,10 +54,16 @@
         line: '{{ username }} ALL=(ALL:ALL) ALL'
         validate: 'visudo -cf %s'
 
-    - name: Install screen
+    - name: Install tools
       apt:
-        name: screen
+        name: "{{ item }}"
         state: present
+      loop:
+        - net-tools
+        - iptraf-ng
+        - nmap
+        - screen
+
 
     - name: Notify user of setup completion
       debug:
@@ -143,3 +149,23 @@
         state: directory
         mode: '0755'
       loop: "{{ base_directories | product(subdirectories) | list }}"
+
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /opt/core/cron
+        - /opt/core/cron/ansible
+        - /opt/core/cron/sh
+        - /opt/core/deploy
+
+    - name: Set permissions to 755
+      file:
+        path: "{{ item }}"
+        mode: '0755'
+      loop:
+        - /opt/core/cron
+        - /opt/core/cron/ansible
+        - /opt/core/cron/sh
+        - /opt/core/deploy
