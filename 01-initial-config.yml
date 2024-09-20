@@ -63,6 +63,7 @@
         - iptraf-ng
         - nmap
         - screen
+        - htop
 
 
     - name: Notify user of setup completion
