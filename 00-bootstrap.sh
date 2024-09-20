@@ -3,6 +3,8 @@
 
 apt-get update
 apt install ansible -y
+apt upgrade -y
+apt dist-upgrade -y
 
 
 # Execute the bootstrap script
