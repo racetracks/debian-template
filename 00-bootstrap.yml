@@ -1,0 +1,62 @@
+---
+- name: Configure system for user and SSH
+  hosts: localhost
+  tasks:
+    - name: Check if the script is run as root
+      fail:
+        msg: "Please run as root."
+      when: ansible_user_id != 'root'
+
+    - name: Update APT package index
+      apt:
+        update_cache: yes
+
+    - name: Install sudo
+      apt:
+        name: sudo
+        state: present
+
+    - name: Add user 'dc'
+      user:
+        name: dc
+        shell: /bin/bash
+        state: present
+        create_home: yes
+
+    - name: Add user 'dc' to sudo group
+      user:
+        name: dc
+        groups: sudo
+        append: yes
+
+    - name: Disable root login shell
+      user:
+        name: root
+        shell: /sbin/nologin
+
+    - name: Disable root SSH login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+
+    - name: Restart SSH service
+      service:
+        name: ssh
+        state: restarted
+
+    - name: Add 'dc' to sudoers
+      lineinfile:
+        path: /etc/sudoers
+        line: 'dc ALL=(ALL:ALL) ALL'
+        validate: 'visudo -cf %s'
+
+    - name: Install screen
+      apt:
+        name: screen
+        state: present
+
+    - name: Notify user of setup completion
+      debug:
+        msg: "Setup complete. Make sure to test the SSH login with the user account before logging out as root."
