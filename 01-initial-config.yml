@@ -1,6 +1,8 @@
 ---
 - name: Configure system for user and SSH
   hosts: localhost
+  vars:
+    username: dc
   tasks:
     - name: Check if the script is run as root
       fail:
@@ -16,16 +18,16 @@
         name: sudo
         state: present
 
-    - name: Add user 'dc'
+    - name: Add user '{{ username }}'
       user:
-        name: dc
+        name: '{{ username }}'
         shell: /bin/bash
         state: present
         create_home: yes
 
-    - name: Add user 'dc' to sudo group
+    - name: Add user '{{ username }}' to sudo group
       user:
-        name: dc
+        name: '{{ username }}'
         groups: sudo
         append: yes
 
@@ -46,10 +48,10 @@
         name: ssh
         state: restarted
 
-    - name: Add 'dc' to sudoers
+    - name: Add '{{ username }}' to sudoers
       lineinfile:
         path: /etc/sudoers
-        line: 'dc ALL=(ALL:ALL) ALL'
+        line: '{{ username }} ALL=(ALL:ALL) ALL'
         validate: 'visudo -cf %s'
 
     - name: Install screen
@@ -61,7 +63,6 @@
       debug:
         msg: "Setup complete. Make sure to test the SSH login with the user account before logging out as root."
 
-        
     - name: Update package list
       apt:
         update_cache: yes
