@@ -4,17 +4,7 @@
 apt-get update
 apt install ansible -y
 apt upgrade -y
-apt dist-upgrade -y
-
-
-# Execute the bootstrap script
-sh 00-bootstrap.sh
-
-# Check if the previous command was successful
-if [ $? -ne 0 ]; then
-    echo "Execution of 00-bootstrap.sh failed."
-    exit 1
-fi
+apt dist-upgrade
 
 # Execute the Ansible playbook for initial configuration
 ansible-playbook 01-initial-config.yml
