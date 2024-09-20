@@ -60,3 +60,59 @@
     - name: Notify user of setup completion
       debug:
         msg: "Setup complete. Make sure to test the SSH login with the user account before logging out as root."
+
+        
+    - name: Update package list
+      apt:
+        update_cache: yes
+
+    - name: Install unattended-upgrades
+      apt:
+        name: unattended-upgrades
+        state: present
+
+    - name: Enable unattended-upgrades service
+      debconf:
+        name: unattended-upgrades
+        question: unattended-upgrades/enable_auto_updates
+        value: "true"
+        vtype: boolean
+
+    - name: Configure unattended-upgrades to install patches for all packages
+      copy:
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Download-Upgradeable-Packages "1";
+          APT::Periodic::AutocleanInterval "7";
+          APT::Periodic::Unattended-Upgrade "1";
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Display the unattended-upgrades configuration
+      command: cat /etc/apt/apt.conf.d/20auto-upgrades
+      register: unattended_upgrades_config
+
+    - name: Output unattended-upgrades configuration
+      debug:
+        var: unattended_upgrades_config.stdout
+
+    # The KernelCare part is commented out in the original script, but it's included here if needed
+    # - name: Download KernelCare package (commented out in original script)
+    #   get_url:
+    #     url: "http://repo.kernelcare.com/3.10.0/3.10.0-862.14.4.el7/kernelcare-latest-{{ ansible_architecture }}.deb"
+    #     dest: /tmp/kernelcare-latest.deb
+
+    # - name: Install KernelCare package (commented out in original script)
+    #   dpkg:
+    #     name: /tmp/kernelcare-latest.deb
+
+    - name: Restart unattended-upgrades service
+      service:
+        name: unattended-upgrades
+        state: restarted
+
+    - name: Notify user of completion
+      debug:
+        msg: "Unattended upgrades installed and configured. KernelCare step skipped. Reboot settings modified."
