@@ -116,3 +116,29 @@
     - name: Notify user of completion
       debug:
         msg: "Unattended upgrades installed and configured. KernelCare step skipped. Reboot settings modified."
+
+
+- name: Create directories and subdirectories
+  hosts: localhost
+  become: yes
+
+  vars:
+    base_directories:
+      - watchtower
+      - portainer_agent
+      - node_exporter
+      # Add any additional directories here
+
+    subdirectories:
+      - build
+      - run
+      - temp
+      # Add any additional subdirectories here
+
+  tasks:
+    - name: Create directories and subdirectories
+      file:
+        path: "/opt/docker/{{ item.0 }}/{{ item.1 }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ base_directories | product(subdirectories) | list }}"
