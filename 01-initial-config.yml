@@ -64,6 +64,9 @@
         - nmap
         - screen
         - htop
+        - wget
+        - curl
+        - rsync
 
 
     - name: Notify user of setup completion
