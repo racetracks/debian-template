@@ -17,5 +17,5 @@ fi
 
 # Execute the script to install Docker
 sh 02-install-docker.sh
-
+sh 03-install-docker-containers.sh
 echo "All scripts executed successfully."
